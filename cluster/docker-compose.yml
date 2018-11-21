@@ -1,0 +1,88 @@
+version: "3"
+
+services:
+  #
+  # RabbitMQ cluster of 3 nodes
+  #
+  rabbitmq-01:
+    container_name: rabbitmq-01
+    build: ../rabbitmq/.
+    hostname: rabbitmq-01
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
+  rabbitmq-02:
+    container_name: rabbitmq-02
+    build: ../rabbitmq/.
+    hostname: rabbitmq-02
+    links:
+      - rabbitmq-01
+    depends_on:
+      - rabbitmq-01
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+    volumes:
+      - ../rabbitmq/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
+    entrypoint: /usr/local/bin/cluster-entrypoint.sh
+  rabbitmq-03:
+    container_name: rabbitmq-03
+    build: ../rabbitmq/.
+    hostname: rabbitmq-03
+    links:
+      - rabbitmq-01
+    depends_on:
+      - rabbitmq-01
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+    volumes:
+      - ../rabbitmq/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
+    entrypoint: /usr/local/bin/cluster-entrypoint.sh
+
+  #
+  # HVS WEB UI
+  #
+  nginx-01:
+    container_name: nginx-01
+    build: ../nginx/.
+    volumes:
+      - ../nginx/app:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  nginx-02:
+    container_name: nginx-02
+    build: ../nginx/.
+    volumes:
+      - ../nginx/app:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  #
+  # HAPROXY Single node
+  #
+  proxy:
+    container_name: haproxy
+    build: ../haproxy/.
+    hostname: pxy
+    # volumes:
+    #   - ../haproxy/config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - rabbitmq-01
+      - rabbitmq-02
+      - rabbitmq-03
+    ports:
+      - "9090:9090"
+      - "15672:15672"
+      - "15674:15674"
+      - "80:80"
+      # - "443:443"
+      # - "8080:8080"
+      - "1883:1883"
+      - "5672:5672"
+# networks:
+#   default:
+#     driver: bridge
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.28.0.1/16
