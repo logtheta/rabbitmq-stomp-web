@@ -12,7 +12,7 @@ To stop the environment just run ./stop.sh
 
 If you want to make some changes to the web application, just go into the nginx/app folder, edit index.html and refresh the browser.
 
-For additional details, check the docker-compose file inthe folder cluster.
+For additional details, check the docker-compose file in the folder "cluster".
 
 ## Testing the Web App
 
