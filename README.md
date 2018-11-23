@@ -4,7 +4,15 @@ A test environment to play with RabbitMQ and STOMP via web socket. The web code 
 
 ## Test environment
 
-Be sure to have Docker and Docker-Compose installed. If you are on Mac or Linux, navigate the folder "cluster" and run the script ./start.sh (you may need to run chmod +x start.sh). The script will run (and build) an environment containing RabbitMQ (three nodes with Web Management, MQTT, STOMP plugins), nginx and haproxy (load balancer for 2 nginx nodes and 3 rabbitmq nodes).
+Be sure to have Docker and Docker-Compose installed. Ensure you can execture the scripts in the project:
+
+```bash
+chmod +x cluster/start.sh
+chmod +x cluster/stop.sh
+chmod +x rabbitmq/cluster-entrypoint.sh
+```
+
+If you are on Mac or Linux, navigate the folder "cluster" and run the script ./start.sh. The script will run (and build) an environment containing RabbitMQ (three nodes with Web Management, MQTT, STOMP plugins), nginx and haproxy (load balancer for 2 nginx nodes and 3 rabbitmq nodes).
 
 To access to the web example, once the environment is up, navigate http://localhost.
 
