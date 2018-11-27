@@ -4,7 +4,7 @@ A test environment to play with RabbitMQ and STOMP via web socket. The web code 
 
 ## Test environment
 
-Be sure to have Docker and Docker-Compose installed. Ensure you can execture the scripts in the project:
+Be sure to have Docker and Docker-Compose installed. Ensure you can execute the scripts in the project:
 
 ```bash
 chmod +x cluster/start.sh
