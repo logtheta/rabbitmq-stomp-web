@@ -73,19 +73,19 @@ services:
   #
   #  WEB UI
   #
-  # nginx-01:
-  #   container_name: nginx-01
-  #   build: ../nginx/.
-  #   volumes:
-  #     - ../nginx/app:/usr/share/nginx/html:ro
-  #   restart: unless-stopped
+  nginx-01:
+    container_name: nginx-01
+    build: ../nginx/.
+    volumes:
+      - ../nginx/app:/usr/share/nginx/html:ro
+    restart: unless-stopped
 
-  # nginx-02:
-  #   container_name: nginx-02
-  #   build: ../nginx/.
-  #   volumes:
-  #     - ../nginx/app:/usr/share/nginx/html:ro
-  #   restart: unless-stopped
+  nginx-02:
+    container_name: nginx-02
+    build: ../nginx/.
+    volumes:
+      - ../nginx/app:/usr/share/nginx/html:ro
+    restart: unless-stopped
 
   #
   # WEB UI React
@@ -95,8 +95,8 @@ services:
     build: ../app/.
     hostname: app
     volumes:
-      - '.:/usr/src/app'
-      - '/usr/src/app/node_modules'
+      - "../app:/usr/src/app"
+      - "/usr/src/app/node_modules"
     environment:
       - NODE_ENV=development
 
@@ -115,11 +115,14 @@ services:
       - rabbitmq-03
       - app
       - keycloak
+      - nginx-01
+      - nginx-02
     ports:
       - "9090:9090"
       - "15672:15672"
       - "15674:15674"
       - "80:80"
+      - "81:81"
       - "8090:8090"
       # - "443:443"
       # - "8080:8080"
