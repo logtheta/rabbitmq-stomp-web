@@ -41,6 +41,36 @@ services:
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
 
   #
+  # Keycloak with Postgres
+  #
+  postgres:
+    container_name: postgres-01
+    image: postgres
+    hostname: postgres-01
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+  keycloak:
+    container_name: keycloak-01
+    image: jboss/keycloak
+    hostname: keycloak-01
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    depends_on:
+      - postgres
+
+  #
   # HVS WEB UI
   #
   nginx-01:
@@ -75,11 +105,19 @@ services:
       - "15672:15672"
       - "15674:15674"
       - "80:80"
+      - "8090:8090"
       # - "443:443"
       # - "8080:8080"
       - "1883:1883"
       - "5672:5672"
-# networks:
+
+#
+# Data volumes
+#
+volumes:
+  postgres_data:
+    driver: local
+    # networks:
 #   default:
 #     driver: bridge
 #     ipam:
