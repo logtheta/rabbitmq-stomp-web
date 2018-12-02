@@ -113,6 +113,8 @@ services:
       - rabbitmq-01
       - rabbitmq-02
       - rabbitmq-03
+      - app
+      - keycloak
     ports:
       - "9090:9090"
       - "15672:15672"
